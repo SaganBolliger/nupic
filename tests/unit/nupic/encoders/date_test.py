@@ -211,6 +211,19 @@ class DateEncoderTest(unittest.TestCase):
                      encoder.decode(self._e.encode(self._d)))
 
 
+  def testStr(self):
+    
+    expectedValue = """DateEncoder:
+  Name: 
+  Forced: True
+  Scalar encoder widths:
+    season: 3
+    day of week: 1
+    weekend: 1
+    time of day: 5
+"""    
+    self.assertEqual(str(self._e), expectedValue)
+
 
 if __name__ == "__main__":
   unittest.main()

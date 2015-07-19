@@ -74,6 +74,7 @@ class DateEncoder(Encoder):
     self.width = 0
     self.description = []
     self.name = name
+    self.forced = forced
 
     # This will contain a list of (name, encoder, offset) tuples for use by
     #  the decode() method
@@ -380,6 +381,13 @@ class DateEncoder(Encoder):
 
   def getDescription(self):
     return self.description
+
+
+  def __str__(self):
+    val = "DateEncoder:\n  Name: %s\n  Forced: %s\n  Scalar encoder widths:\n" % (self.name, self.forced)
+    for name, encoder, _offset in self.encoders:
+      val += "    %s: %d\n" % (name, encoder.w)
+    return val
 
 
   @classmethod
