@@ -185,10 +185,11 @@ class CoordinateEncoder(Encoder):
     return rng.getUInt32(n)
 
 
-  def dump(self):
-    print "CoordinateEncoder:"
-    print "  w:   %d" % self.w
-    print "  n:   %d" % self.n
+  def __str__(self):
+    val = "CoordinateEncoder:\n"
+    val += "  w:   %d\n" % self.w
+    val += "  n:   %d\n" % self.n
+    return val
 
 
   @classmethod
