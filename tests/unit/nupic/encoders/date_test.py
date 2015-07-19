@@ -212,7 +212,6 @@ class DateEncoderTest(unittest.TestCase):
 
 
   def testStr(self):
-    
     expectedValue = """DateEncoder:
   Name: 
   Forced: True

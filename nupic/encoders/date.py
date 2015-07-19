@@ -384,7 +384,8 @@ class DateEncoder(Encoder):
 
 
   def __str__(self):
-    val = "DateEncoder:\n  Name: %s\n  Forced: %s\n  Scalar encoder widths:\n" % (self.name, self.forced)
+    val = "DateEncoder:\n  Name: %s\n  Forced: %s\n" % (self.name, self.forced)
+    val += "  Scalar encoder widths:\n" 
     for name, encoder, _offset in self.encoders:
       val += "    %s: %d\n" % (name, encoder.w)
     return val
