@@ -193,21 +193,22 @@ class AdaptiveScalarEncoder(ScalarEncoder):
     return super(AdaptiveScalarEncoder, self).topDownCompute(encoded)
 
 
-  def dump(self):
+  def __str__(self):
     """
-    Prints details about current state to stdout.
+    @returns details about current state as string.
     """
-    print "AdaptiveScalarEncoder:"
-    print "  min: %f" % self.minval
-    print "  max: %f" % self.maxval
-    print "  w:   %d" % self.w
-    print "  n:   %d" % self.n
-    print "  resolution: %f" % self.resolution
-    print "  radius:     %f" % self.radius
-    print "  periodic: %s" % self.periodic
-    print "  nInternal: %d" % self.nInternal
-    print "  rangeInternal: %f" % self.rangeInternal
-    print "  padding: %d" % self.padding
+    val = "AdaptiveScalarEncoder:\n"
+    val += "  min: %f\n" % self.minval
+    val += "  max: %f\n" % self.maxval
+    val += "  w:   %d\n" % self.w
+    val += "  n:   %d\n" % self.n
+    val += "  resolution: %f\n" % self.resolution
+    val += "  radius:     %f\n" % self.radius
+    val += "  periodic: %\n" % self.periodic
+    val += "  nInternal: %d\n" % self.nInternal
+    val += "  rangeInternal: %f\n" % self.rangeInternal
+    val += "  padding: %d\n" % self.padding
+    return val
 
 
   @classmethod
