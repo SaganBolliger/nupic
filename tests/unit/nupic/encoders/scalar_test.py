@@ -438,6 +438,23 @@ class ScalarEncoderTest(unittest.TestCase):
     self.assertIsInstance(encoder, ScalarEncoder)
 
 
+  def testStr(self):
+    l = ScalarEncoder(name="scalar", resolution=0.5, w=3, minval=1, maxval=8,
+                      periodic=True, forced=True)
+    expectedValue = """ScalarEncoder:
+  min: 1.000000
+  max: 8.000000
+  w:   3
+  n:   14
+  resolution: 0.500000
+  radius:     1.500000
+  periodic: True
+  nInternal: 14
+  rangeInternal: 7.000000
+  padding: 0
+"""    
+    self.assertEqual(str(l), expectedValue)
+
 
 if __name__ == "__main__":
   unittest.main()
