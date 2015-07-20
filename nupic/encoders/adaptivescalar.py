@@ -198,13 +198,13 @@ class AdaptiveScalarEncoder(ScalarEncoder):
     @returns details about current state as string.
     """
     val = "AdaptiveScalarEncoder:\n"
-    val += "  min: %f\n" % self.minval
-    val += "  max: %f\n" % self.maxval
+    val += "  min: %s\n" % (str(self.minval) if self.minval else "NOT SET")
+    val += "  max: %s\n" % (str(self.maxval) if self.maxval else "NOT SET")
     val += "  w:   %d\n" % self.w
     val += "  n:   %d\n" % self.n
     val += "  resolution: %f\n" % self.resolution
     val += "  radius:     %f\n" % self.radius
-    val += "  periodic: %\n" % self.periodic
+    val += "  periodic: %s\n" % self.periodic
     val += "  nInternal: %d\n" % self.nInternal
     val += "  rangeInternal: %f\n" % self.rangeInternal
     val += "  padding: %d\n" % self.padding

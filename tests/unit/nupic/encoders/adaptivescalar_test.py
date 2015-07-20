@@ -243,6 +243,25 @@ class AdaptiveScalarTest(unittest.TestCase):
     self.assertTrue(numpy.array_equal(result1, result2))
 
 
+  def testStr(self):
+    expectedValue = """AdaptiveScalarEncoder:
+  min: 1
+  max: NOT SET
+  w:   5
+  n:   14
+  resolution: 1.000000
+  radius:     5.000000
+  periodic: False
+  nInternal: 10
+  rangeInternal: 9.000000
+  padding: 2
+"""
+    # Make sure we get a correct string even with range not set during
+    # initialization
+    self._l.maxval = None
+    self.assertEqual(str(self._l), expectedValue)
+
+
 
 if __name__ == '__main__':
   unittest.main()
