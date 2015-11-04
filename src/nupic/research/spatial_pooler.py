@@ -1112,38 +1112,53 @@ class SpatialPooler(object):
     self._connectedCounts[columnIndex] = newConnected.size
 
 
-  def _initPermConnected(self):
+  def _getRandomFloatArray(self, length):
     """
-    Returns a randomly generated permanence value for a synapses that is
-    initialized in a connected state. The basic idea here is to initialize
-    permanence values very close to synPermConnected so that a small number of
-    learning steps could make it disconnected or connected.
+    Returns a numpy array of 32 bit floats of length `length` generated using
+    nupic's random number generator.
+    """
+    rand = numpy.ndarray(length, dtype=numpy.float32)
+    self._random.initializeReal32Array(rand)
+    return rand
+
+
+  def _initPermConnected(self, count):
+    """
+    Returns an array of randomly generated permanence values of length count
+    for synapses that are initialized in a connected state. The basic idea here
+    is to initialize permanence values very close to synPermConnected so that a
+    small number of learning steps could make it disconnected or connected.
 
     Note: experimentation was done a long time ago on the best way to initialize
     permanence values, but the history for this particular scheme has been lost.
     """
+    rand = self._getRandomFloatArray(count)
+
     p = self._synPermConnected + (
-        self._synPermMax - self._synPermConnected)*self._random.getReal64()
+        self._synPermMax - self._synPermConnected) * rand
 
     # Ensure we don't have too much unnecessary precision. A full 64 bits of
     # precision causes numerical stability issues across platforms and across
     # implementations
-    p = int(p*100000) / 100000.0
+    p = (p*100000).astype(numpy.int32) / 100000.0
     return p
 
 
-  def _initPermNonConnected(self):
+  def _initPermNonConnected(self, count):
     """
-    Returns a randomly generated permanence value for a synapses that is to be
-    initialized in a non-connected state.
+    Returns an array of randomly generated permanence values of length count
+    for synapses that are to be initialized in a non-connected state.
     """
-    p = self._synPermConnected * self._random.getReal64()
+    rand = self._getRandomFloatArray(count)
 
+    p = self._synPermConnected * rand
+    
     # Ensure we don't have too much unnecessary precision. A full 64 bits of
     # precision causes numerical stability issues across platforms and across
     # implementations
-    p = int(p*100000) / 100000.0
+    p = (p*100000).astype(numpy.int32) / 100000.0
     return p
+
 
   def _initPermanence(self, potential, connectedPct):
     """
@@ -1166,15 +1181,23 @@ class SpatialPooler(object):
     # to the inputs. Initially a subset of the input bits in a
     # column's potential pool will be connected. This number is
     # given by the parameter "connectedPct"
-    perm = numpy.zeros(self._numInputs)
-    for i in xrange(self._numInputs):
-      if (potential[i] < 1):
-        continue
 
-      if (self._random.getReal64() <= connectedPct):
-        perm[i] = self._initPermConnected()
-      else:
-        perm[i] = self._initPermNonConnected()
+    potentialMask = potential >= 1
+    potentialCount = potentialMask.sum()
+
+    randomValues = self._getRandomFloatArray(potentialCount)
+    isConnectedPotentialMask = randomValues <= connectedPct
+    connectedCount = isConnectedPotentialMask.sum()
+    
+    isConnectedPermMask = numpy.zeros(self._numInputs, dtype=numpy.bool)
+    isConnectedPermMask[potentialMask] = isConnectedPotentialMask
+    
+    isNotConnectedPermMask = numpy.zeros(self._numInputs, dtype=numpy.bool)
+    isNotConnectedPermMask[potentialMask] = ~isConnectedPotentialMask
+
+    perm = numpy.zeros(self._numInputs)
+    perm[isConnectedPermMask] = self._initPermConnected(connectedCount)
+    perm[isNotConnectedPermMask] = self._initPermNonConnected(potentialCount - connectedCount)
 
     # Clip off low values. Since we use a sparse representation
     # to store the permanence values this helps reduce memory
